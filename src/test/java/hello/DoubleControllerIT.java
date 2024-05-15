@@ -1,6 +1,5 @@
 package hello;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -13,11 +12,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
-
-import hello.Application;
-import hello.Roll;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = Application.class)
 @TestPropertySource(
@@ -32,7 +26,7 @@ public class DoubleControllerIT
 	private TestRestTemplate restTemplate;
 
     @Test
-    public void test() {
+    public void shouldSaveRoll() {
 
       Roll newRoll = Roll.builder()
       .color("red")
@@ -41,8 +35,7 @@ public class DoubleControllerIT
       .roll(5)
       .build();
 
-       HttpEntity<Roll> request = new HttpEntity<>(newRoll, null);
-      ResponseEntity<String> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/double/save", request, String.class);
+      ResponseEntity<String> response = saveRoll(newRoll);
       assertEquals(HttpStatus.CREATED.value(), response.getStatusCode().value());
 
     }
@@ -52,8 +45,20 @@ public void throw400BadRequest_WhenNull() {
       .color("red")
       .build();
 
-       HttpEntity<Roll> request = new HttpEntity<>(newRoll, null);
-      ResponseEntity<String> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/double/save", request, String.class);
+      ResponseEntity<String> response = saveRoll(newRoll);
+
       assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode().value());
+}
+
+@Test
+public void shouldSendServerEventAfterSave() {
+
+      ResponseEntity<String> response = this.restTemplate.getForEntity("http://localhost:" + port + "/api/double/sse", String.class);
+}
+
+private ResponseEntity<String> saveRoll(Roll roll) {
+       HttpEntity<Roll> request = new HttpEntity<>(roll, null);
+      return this.restTemplate.postForEntity("http://localhost:" + port + "/api/double/save", request, String.class);
+
 }
 }
