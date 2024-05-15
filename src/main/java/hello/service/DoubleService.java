@@ -14,15 +14,8 @@ public class DoubleService {
     @Autowired
     private DoubleRepository repository;
 
-    public Optional<Roll> save(Roll roll) {
-        try {
-        Roll saved = repository.save(roll);
-        return Optional.of(saved);    
-        } catch (Exception e) {
-            // TODO: handle exception
-            System.err.println(e);
-            return Optional.empty();
-        }
+    public void save(Roll roll) {
+        repository.save(roll);
     }
     
 }

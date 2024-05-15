@@ -1,3 +1,4 @@
+package hello;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -9,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
 
@@ -34,15 +36,24 @@ public class DoubleControllerIT
 
       Roll newRoll = Roll.builder()
       .color("red")
-      .created("2023-10-04T18:23:50.851418761-03:00")
       .id(1L)
       .platform("blaze")
-      .roll("5")
+      .roll(5)
       .build();
 
        HttpEntity<Roll> request = new HttpEntity<>(newRoll, null);
       ResponseEntity<String> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/double/save", request, String.class);
-      assertTrue(response.getStatusCode().is2xxSuccessful());
+      assertEquals(HttpStatus.CREATED.value(), response.getStatusCode().value());
 
     }
+@Test
+public void throw400BadRequest_WhenNull() {
+      Roll newRoll = Roll.builder()
+      .color("red")
+      .build();
+
+       HttpEntity<Roll> request = new HttpEntity<>(newRoll, null);
+      ResponseEntity<String> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/double/save", request, String.class);
+      assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode().value());
+}
 }
