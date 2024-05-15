@@ -1,4 +1,4 @@
-package hello;
+package hello.unit;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -12,24 +12,37 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
+import hello.DoubleController;
+import hello.Roll;
 import hello.repository.DoubleRepository;
 import hello.service.DoubleService;
+import hello.service.SseService;
 
 @ExtendWith(MockitoExtension.class)
-public class DoubleServiceTest {
+public class DoubleControllerTest {
 
 @InjectMocks
-private DoubleService service;
+private DoubleController controller;
 
 @Mock
-private DoubleRepository repository;
+private SseService sseService;
+@Mock
+private DoubleService service;
 
 @Test
-public void testSave() {
+public void shouldCallService() {
     Roll roll = mock(Roll.class);
-    service.save(roll);
+    controller.saveRoll(roll, null);
 
-    verify(repository).save(roll);
+    verify(service).save(roll);
+}
+
+@Test
+public void shouldCallSeeService() {
+    Roll roll = mock(Roll.class);
+    controller.saveRoll(roll, null);
+
+    verify(sseService).sendEvents();
 }
 
 }

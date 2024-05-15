@@ -14,14 +14,25 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import hello.service.DoubleService;
+import hello.service.SseService;
 
 @RestController
 public class DoubleController {
 
 @Autowired
 private DoubleService service;
+@Autowired
+private SseService sseService;
+
+ @GetMapping(path = "/sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter subscribe() {
+        SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
+        sseService.addEmitter(emitter);
+        return emitter;
+    } 
 
 @PostMapping(path = "/api/double/save",
    consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -30,6 +41,7 @@ private DoubleService service;
    System.out.println("Roll received: "+newRoll);
 try {
     service.save(newRoll);
+    sseService.sendEvents();
     return ResponseEntity.status(HttpStatus.CREATED).build();
 } catch (Exception e) {
     // TODO: handle exception
