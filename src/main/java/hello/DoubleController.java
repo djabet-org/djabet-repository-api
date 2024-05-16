@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,6 +29,7 @@ private DoubleService service;
 @Autowired
 private SseService sseService;
 
+ @CrossOrigin
  @GetMapping(path = "/api/double/sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter subscribe(HttpServletResponse response) {
         response.setHeader("Content-type", "text/event-stream");

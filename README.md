@@ -35,3 +35,5 @@ You can even enable auto-compilation if your IDE supports that, for totally seam
     * Showing how to use @AuthenticationPrincipal to get the details for the currently logged in user
 * [Thymeleaf](http://www.thymeleaf.org)
 * [Thymeleaf Custom Layout - Template layouts in Spring MVC application with no extensions](https://github.com/kolorobot/thymeleaf-custom-layout)
+
+JAVA_HOME=/usr/lib/jvm/jre-17 mvn spring-boot:run
