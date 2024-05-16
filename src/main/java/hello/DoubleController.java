@@ -1,6 +1,7 @@
 package hello;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,9 @@ private DoubleService service;
 private SseService sseService;
 
  @GetMapping(path = "/api/double/sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter subscribe() {
+    public SseEmitter subscribe(HttpServletResponse response) {
+        response.setHeader("Content-type", "text/event-stream");
+
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
         sseService.addEmitter(emitter);
         return emitter;
