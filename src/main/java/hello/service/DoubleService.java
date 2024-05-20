@@ -24,7 +24,7 @@ public class DoubleService {
 
     public List<Roll> fetch(int qtd) {
         Page<Roll> page = repository.findAll(
-  PageRequest.of(0, 100, Sort.by(Sort.Direction.ASC, "created")));
+  PageRequest.of(0, qtd, Sort.by(Sort.Direction.ASC, "created")));
 
   return page.get().collect(Collectors.toList());
     }
