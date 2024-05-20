@@ -25,7 +25,7 @@ public class SseService {
     public void sendEvents(Roll savedRoll) {
         for (SseEmitter emitter : emitters) {
             try {
-                emitter.send(savedRoll);
+                emitter.send(savedRoll.toString());
             } catch (IOException e) {
                 emitter.complete();
                 emitters.remove(emitter);

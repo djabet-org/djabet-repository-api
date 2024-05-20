@@ -45,7 +45,7 @@ private SseService sseService;
    System.out.println("Roll received: "+newRoll);
 try {
     service.save(newRoll);
-    sseService.sendEvents();
+    sseService.sendEvents(newRoll);
     return ResponseEntity.status(HttpStatus.CREATED).build();
 } catch (Exception e) {
     // TODO: handle exception
