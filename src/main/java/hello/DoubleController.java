@@ -57,7 +57,8 @@ try {
 
 }
 
-@GetMapping( path = "/api/double/rolls")
+@GetMapping( path = "/api/double/rolls",
+produces = MediaType.APPLICATION_JSON_VALUE)
 public ResponseEntity<String> fetchRolls(@RequestParam("qtd") int qtd) throws JsonProcessingException {
     try {
     List<Roll> rolls = service.fetch(qtd);
