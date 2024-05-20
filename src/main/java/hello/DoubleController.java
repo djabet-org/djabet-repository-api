@@ -26,14 +26,13 @@ public class DoubleController {
 
 @Autowired
 private DoubleService service;
+
 @Autowired
 private SseService sseService;
 
  @CrossOrigin
  @GetMapping(path = "/api/double/sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter subscribe(HttpServletResponse response) {
-        response.setHeader("Content-type", "text/event-stream");
-
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
         sseService.addEmitter(emitter);
         return emitter;

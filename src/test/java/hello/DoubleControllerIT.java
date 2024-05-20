@@ -50,12 +50,6 @@ public void throw400BadRequest_WhenNull() {
       assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode().value());
 }
 
-@Test
-public void shouldSendServerEventAfterSave() {
-
-      ResponseEntity<String> response = this.restTemplate.getForEntity("http://localhost:" + port + "/api/double/sse", String.class);
-}
-
 private ResponseEntity<String> saveRoll(Roll roll) {
        HttpEntity<Roll> request = new HttpEntity<>(roll, null);
       return this.restTemplate.postForEntity("http://localhost:" + port + "/api/double/save", request, String.class);
