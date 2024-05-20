@@ -1,8 +1,12 @@
 package hello.service;
 
-import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import hello.Roll;
@@ -16,6 +20,13 @@ public class DoubleService {
 
     public void save(Roll roll) {
         repository.save(roll);
+    }
+
+    public List<Roll> fetch(int qtd) {
+        Page<Roll> page = repository.findAll(
+  PageRequest.of(0, 100, Sort.by(Sort.Direction.ASC, "created")));
+
+  return page.get().collect(Collectors.toList());
     }
     
 }
