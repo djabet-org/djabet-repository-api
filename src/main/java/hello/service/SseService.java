@@ -4,6 +4,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import hello.Roll;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,10 +22,10 @@ public class SseService {
         emitter.onTimeout(() -> emitters.remove(emitter));
     }
 
-    public void sendEvents() {
+    public void sendEvents(Roll savedRoll) {
         for (SseEmitter emitter : emitters) {
             try {
-                emitter.send("hey! "+System.currentTimeMillis());
+                emitter.send(savedRoll);
             } catch (IOException e) {
                 emitter.complete();
                 emitters.remove(emitter);

@@ -30,7 +30,7 @@ private SseService sseService;
 private DoubleService service;
 
 @Test
-public void shouldCallService() {
+public void shouldCallServiceForCreation() {
     Roll roll = mock(Roll.class);
     controller.saveRoll(roll, null);
 
@@ -38,11 +38,24 @@ public void shouldCallService() {
 }
 
 @Test
+public void shouldCallGetRollsService() throws JsonProcessingException {
+    when(service.fetch(2)).thenReturn(
+        List.of(
+            Roll.builder().build(),
+            Roll.builder().build()
+        ));
+
+    controller.fetchRolls(2);
+
+    verify(service).fetch(2);
+}
+
+@Test
 public void shouldCallSeeService() {
     Roll roll = mock(Roll.class);
     controller.saveRoll(roll, null);
 
-    verify(sseService).sendEvents();
+    verify(sseService).sendEvents(roll);
 }
 
 }
