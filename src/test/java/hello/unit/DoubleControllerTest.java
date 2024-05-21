@@ -4,6 +4,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.Instant;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -39,15 +40,15 @@ public void shouldCallServiceForCreation() {
 
 @Test
 public void shouldCallGetRollsService() throws JsonProcessingException {
-    when(service.fetch(2)).thenReturn(
+    when(service.fetch(2, "asc")).thenReturn(
         List.of(
-            Roll.builder().build(),
-            Roll.builder().build()
+            Roll.builder().created(Instant.now()).build(),
+            Roll.builder().created(Instant.now().plusSeconds(60)).build()
         ));
 
-    controller.fetchRolls(2);
+    controller.fetchRolls(2, "asc");
 
-    verify(service).fetch(2);
+    verify(service).fetch(2,"asc");
 }
 
 @Test

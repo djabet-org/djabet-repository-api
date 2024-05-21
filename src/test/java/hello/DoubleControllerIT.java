@@ -1,6 +1,9 @@
 package hello;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.time.Instant;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +34,37 @@ public class DoubleControllerIT
 	@Autowired
 	private TestRestTemplate restTemplate;
 
+      private Roll roll1 = Roll.builder()
+      .color("red")
+      .id(1L)
+      .created(Instant.now())
+      .platform("blaze")
+      .roll(5)
+      .build();
+      
+      private Roll roll2 = Roll.builder()
+      .color("black")
+      .id(2L)
+      .created(Instant.now().plusSeconds(30))
+      .platform("blaze")
+      .roll(6)
+      .build();
+
+      private Roll roll3 = Roll.builder()
+      .color("black")
+      .id(3L)
+      .created(Instant.now().plusSeconds(60))
+      .platform("blaze")
+      .roll(6)
+      .build();
+
+      @BeforeEach
+      public void setup() {
+        saveRoll(roll1);
+        saveRoll(roll2);
+        saveRoll(roll3);
+      }
+
     @Test
     public void shouldSaveRoll() {
 
@@ -47,28 +81,38 @@ public class DoubleControllerIT
     }
 
     @Test
-    public void shouldGetRolls() throws JsonMappingException, JsonProcessingException {
-      Roll roll1 = Roll.builder()
-      .color("red")
-      .id(1L)
-      .platform("blaze")
-      .roll(5)
-      .build();
-      
-      Roll roll2 = Roll.builder()
-      .color("black")
-      .id(2L)
-      .platform("blaze")
-      .roll(6)
-      .build();
+    public void shouldGetRollsByQtd() throws JsonMappingException, JsonProcessingException {
 
-      saveRoll(roll1);
-      saveRoll(roll2);
-
-      ResponseEntity<String> response = this.restTemplate.getForEntity("http://localhost:" + port + "/api/double/rolls?qtd=2", String.class);
+      ResponseEntity<String> response = this.restTemplate.getForEntity("http://localhost:" + port + "/api/double/rolls?qtd=2&sort=asc", String.class);
       JsonNode json = new ObjectMapper().readTree(response.getBody());
       assertEquals(HttpStatus.OK.value(), response.getStatusCode().value());
-      assertEquals(2, ((ArrayNode) json).size());
+
+      ArrayNode result = ((ArrayNode) json);
+      assertEquals(2, result.size());
+    }
+
+    @Test
+    public void shouldGetRollsAscSort() throws JsonMappingException, JsonProcessingException {
+      ResponseEntity<String> response = this.restTemplate.getForEntity("http://localhost:" + port + "/api/double/rolls?qtd=2&sort=asc", String.class);
+      JsonNode json = new ObjectMapper().readTree(response.getBody());
+      assertEquals(HttpStatus.OK.value(), response.getStatusCode().value());
+
+      ArrayNode result = ((ArrayNode) json);
+      assertEquals(2, result.size());
+      assertEquals(1L, result.get(0).get("id").asLong());
+      assertEquals(2L, result.get(1).get("id").asLong());
+    }
+
+    @Test
+    public void shouldGetRollsDescSort() throws JsonMappingException, JsonProcessingException {
+      ResponseEntity<String> response = this.restTemplate.getForEntity("http://localhost:" + port + "/api/double/rolls?qtd=2&sort=desc", String.class);
+      JsonNode json = new ObjectMapper().readTree(response.getBody());
+      assertEquals(HttpStatus.OK.value(), response.getStatusCode().value());
+
+      ArrayNode result = ((ArrayNode) json);
+      assertEquals(2, result.size());
+      assertEquals(3L, result.get(0).get("id").asLong());
+      assertEquals(2L, result.get(1).get("id").asLong());
     }
 
 @Test
