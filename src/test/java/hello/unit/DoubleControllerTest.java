@@ -40,15 +40,15 @@ public void shouldCallServiceForCreation() {
 
 @Test
 public void shouldCallGetRollsService() throws JsonProcessingException {
-    when(service.fetch(2, "asc")).thenReturn(
+    when(service.fetch(2, "asc", "blaze")).thenReturn(
         List.of(
             Roll.builder().created(Instant.now()).build(),
             Roll.builder().created(Instant.now().plusSeconds(60)).build()
         ));
 
-    controller.fetchRolls(2, "asc");
+    controller.fetchRolls(2, "asc", "blaze");
 
-    verify(service).fetch(2,"asc");
+    verify(service).fetch(2,"asc", "blaze");
 }
 
 @Test

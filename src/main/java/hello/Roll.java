@@ -1,6 +1,8 @@
 package hello;
 
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,6 +20,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "double_rolls")
@@ -25,6 +28,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class Roll {
 
     @Id
@@ -38,7 +42,7 @@ public class Roll {
     @NotNull(message = "roll is mandatory.")
     private Integer roll;
     @JsonIgnore
-    private Instant created = Instant.now();
+    private Instant created = ZonedDateTime.now(ZoneId.of("America/Recife")).toInstant();
     @Transient
     private String createdTime = created.toString();
     private float total_red_money = 0;

@@ -22,10 +22,11 @@ public class DoubleService {
         repository.save(roll);
     }
 
-    public List<Roll> fetch(int qtd, String sort) {
+    public List<Roll> fetch(int qtd, String sort, String platform) {
+        System.out.println("creu "+platform);
+        // return repository.findByPlatform(platform);
         Sort.Direction sortDirection = "asc".equals(sort) ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Page<Roll> page = repository.findAll(
-  PageRequest.of(0, qtd, Sort.by(sortDirection, "created")));
+        Page<Roll> page = repository.findByPlatform(platform, PageRequest.of(0, qtd, Sort.by(sortDirection, "created")));
 
   return page.get().collect(Collectors.toList());
     }

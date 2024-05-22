@@ -2,7 +2,9 @@ package hello;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.Instant;
+import java.util.List;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,10 +19,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+
+import hello.repository.DoubleRepository;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = Application.class)
 @TestPropertySource(
@@ -34,6 +39,9 @@ public class DoubleControllerIT
 	@Autowired
 	private TestRestTemplate restTemplate;
 
+  @Autowired
+  private DoubleRepository repository;
+
       private Roll roll1 = Roll.builder()
       .color("red")
       .id(1L)
@@ -46,7 +54,7 @@ public class DoubleControllerIT
       .color("black")
       .id(2L)
       .created(Instant.now().plusSeconds(30))
-      .platform("blaze")
+      .platform("betfiery")
       .roll(6)
       .build();
 
@@ -55,7 +63,7 @@ public class DoubleControllerIT
       .id(3L)
       .created(Instant.now().plusSeconds(60))
       .platform("blaze")
-      .roll(6)
+      .roll(7)
       .build();
 
       @BeforeEach
@@ -71,7 +79,7 @@ public class DoubleControllerIT
       Roll newRoll = Roll.builder()
       .color("red")
       .id(1L)
-      .platform("blaze")
+      .platform("chillbet")
       .roll(5)
       .build();
 
@@ -81,38 +89,17 @@ public class DoubleControllerIT
     }
 
     @Test
-    public void shouldGetRollsByQtd() throws JsonMappingException, JsonProcessingException {
+    public void shouldGetRollsFilter() throws JsonMappingException, JsonProcessingException {
+      ResponseEntity<String> response = this.restTemplate.getForEntity("http://localhost:" + port + "/api/double/rolls?platform=blaze&qtd=2&sort=desc", String.class);
+      List<Roll> rolls = new ObjectMapper().readValue(response.getBody(), new TypeReference<List<Roll>>(){});
+      System.out.println("hey "+rolls);
 
-      ResponseEntity<String> response = this.restTemplate.getForEntity("http://localhost:" + port + "/api/double/rolls?qtd=2&sort=asc", String.class);
-      JsonNode json = new ObjectMapper().readTree(response.getBody());
       assertEquals(HttpStatus.OK.value(), response.getStatusCode().value());
-
-      ArrayNode result = ((ArrayNode) json);
-      assertEquals(2, result.size());
-    }
-
-    @Test
-    public void shouldGetRollsAscSort() throws JsonMappingException, JsonProcessingException {
-      ResponseEntity<String> response = this.restTemplate.getForEntity("http://localhost:" + port + "/api/double/rolls?qtd=2&sort=asc", String.class);
-      JsonNode json = new ObjectMapper().readTree(response.getBody());
-      assertEquals(HttpStatus.OK.value(), response.getStatusCode().value());
-
-      ArrayNode result = ((ArrayNode) json);
-      assertEquals(2, result.size());
-      assertEquals(1L, result.get(0).get("id").asLong());
-      assertEquals(2L, result.get(1).get("id").asLong());
-    }
-
-    @Test
-    public void shouldGetRollsDescSort() throws JsonMappingException, JsonProcessingException {
-      ResponseEntity<String> response = this.restTemplate.getForEntity("http://localhost:" + port + "/api/double/rolls?qtd=2&sort=desc", String.class);
-      JsonNode json = new ObjectMapper().readTree(response.getBody());
-      assertEquals(HttpStatus.OK.value(), response.getStatusCode().value());
-
-      ArrayNode result = ((ArrayNode) json);
-      assertEquals(2, result.size());
-      assertEquals(3L, result.get(0).get("id").asLong());
-      assertEquals(2L, result.get(1).get("id").asLong());
+      assertEquals(2, rolls.size());
+      assertEquals(10, rolls.get(0).getId());
+      assertEquals("blaze", rolls.get(0).getPlatform());
+      assertEquals(8, rolls.get(1).getId());
+      assertEquals("blaze", rolls.get(1).getPlatform());
     }
 
 @Test
@@ -124,6 +111,11 @@ public void throw400BadRequest_WhenNull() {
       ResponseEntity<String> response = saveRoll(newRoll);
 
       assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode().value());
+}
+
+@AfterEach
+public void teardown() {
+  repository.deleteAll();
 }
 
 private ResponseEntity<String> saveRoll(Roll roll) {

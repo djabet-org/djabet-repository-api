@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -47,9 +48,9 @@ public void shouldCallFetchRolls() {
     Roll roll1 = Roll.builder().id(1L).created(Instant.now()).build();
     Roll roll2 = Roll.builder().id(2L).created(Instant.now().plusSeconds(60)).build();
 
-    when(repository.findAll(any(PageRequest.class))).thenReturn(new PageImpl<Roll>(List.of(roll1, roll2)));
+    when(repository.findByPlatform(anyString(), any(PageRequest.class))).thenReturn(new PageImpl<Roll>(List.of(roll1, roll2)));
 
-    List<Roll> rolls = service.fetch(2, "asc");
+    List<Roll> rolls = service.fetch(2, "asc", "platform");
     assertEquals(2, rolls.size());
 }
 }

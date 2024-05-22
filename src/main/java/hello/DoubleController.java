@@ -59,9 +59,11 @@ try {
 
 @GetMapping( path = "/api/double/rolls",
 produces = MediaType.APPLICATION_JSON_VALUE)
-public ResponseEntity<String> fetchRolls(@RequestParam("qtd") int qtd, @RequestParam("sort") String sort) throws JsonProcessingException {
+public ResponseEntity<String> fetchRolls(@RequestParam("qtd") int qtd,
+ @RequestParam("sort") String sort,
+  @RequestParam("platform") String platform) throws JsonProcessingException {
     try {
-    List<Roll> rolls = service.fetch(qtd, sort);
+    List<Roll> rolls = service.fetch(qtd, sort, platform);
     String rollsAsJson = new ObjectMapper().writeValueAsString(rolls);
     return ResponseEntity.ok().body(rollsAsJson);
     } catch (Exception e) {
