@@ -57,6 +57,7 @@ try {
 
 }
 
+@CrossOrigin
 @GetMapping( path = "/api/double/rolls",
 produces = MediaType.APPLICATION_JSON_VALUE)
 public ResponseEntity<String> fetchRolls(@RequestParam("qtd") int qtd,
