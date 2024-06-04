@@ -41,7 +41,7 @@ private SseService sseService;
         return emitter;
     } 
 
-@PostMapping(path = "/api/double/save",
+@PostMapping(path = "/api/double",
    consumes = MediaType.APPLICATION_JSON_VALUE,
    produces = MediaType.APPLICATION_JSON_VALUE)
    public ResponseEntity saveRoll(@Valid @RequestBody Roll newRoll, HttpServletRequest request) {
@@ -58,7 +58,7 @@ try {
 }
 
 @CrossOrigin
-@GetMapping( path = "/api/double/rolls",
+@GetMapping( path = "/api/double",
 produces = MediaType.APPLICATION_JSON_VALUE)
 public ResponseEntity<String> fetchRolls(@RequestParam("qtd") int qtd,
  @RequestParam("sort") String sort,
