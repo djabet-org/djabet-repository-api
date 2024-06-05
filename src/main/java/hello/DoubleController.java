@@ -41,6 +41,7 @@ private SseService sseService;
         return emitter;
     } 
 
+@CrossOrigin
 @PostMapping(path = "/api/double",
    consumes = MediaType.APPLICATION_JSON_VALUE,
    produces = MediaType.APPLICATION_JSON_VALUE)
