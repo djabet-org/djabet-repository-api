@@ -26,10 +26,10 @@ public class SseService {
         emitter.onTimeout(() -> emitters.remove(emitter));
     }
 
-    public void sendEvents(Roll savedRoll) {
+    public void sendEvents(Object data) {
         for (SseEmitter emitter : emitters) {
             try {
-                emitter.send(mapper.writeValueAsString(savedRoll));
+                emitter.send(mapper.writeValueAsString(data));
             } catch (IOException e) {
                 emitter.complete();
                 emitters.remove(emitter);

@@ -90,7 +90,7 @@ public class DoubleControllerIT
 
     @Test
     public void shouldGetRollsFilter() throws JsonMappingException, JsonProcessingException {
-      ResponseEntity<String> response = this.restTemplate.getForEntity("http://localhost:" + port + "/api/double/rolls?platform=blaze&qtd=2&sort=desc", String.class);
+      ResponseEntity<String> response = this.restTemplate.getForEntity("http://localhost:" + port + "/api/double?platform=blaze&qtd=2&sort=desc", String.class);
       List<Roll> rolls = new ObjectMapper().readValue(response.getBody(), new TypeReference<List<Roll>>(){});
       System.out.println("hey "+rolls);
 

@@ -9,3 +9,14 @@ CREATE TABLE public.double_rolls (
 	total_white_money real NULL DEFAULT '0'::real,
     primary key(id)
 );
+
+CREATE TABLE public.crash_points (
+	crash_point real NOT NULL,
+	created timestamp NOT NULL,
+	id int NOT NULL auto_increment,
+	platform varchar NOT NULL,
+	total_bets_placed int NULL DEFAULT 0,
+	total_money_bets real NULL DEFAULT 0,
+	total_money_bets_won real NULL DEFAULT 0,
+	primary key(id)
+);
