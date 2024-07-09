@@ -120,7 +120,7 @@ public void teardown() {
 
 private ResponseEntity<String> saveRoll(Roll roll) {
        HttpEntity<Roll> request = new HttpEntity<>(roll, null);
-      return this.restTemplate.postForEntity("http://localhost:" + port + "/api/double/save", request, String.class);
+      return this.restTemplate.postForEntity("http://localhost:" + port + "/api/double?platform=blaze", request, String.class);
 
 }
 }
