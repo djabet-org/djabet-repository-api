@@ -4,11 +4,15 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyIterable;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.Instant;
 import java.util.List;
 
@@ -21,7 +25,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.multipart.MultipartFile;
 
+import hello.ExcelHelper;
 import hello.Roll;
 import hello.repository.DoubleRepository;
 import hello.service.DoubleService;
@@ -34,6 +40,9 @@ private DoubleService service;
 
 @Mock
 private DoubleRepository repository;
+
+@Mock
+private ExcelHelper excelHelper;
 
 @Test
 public void testSave() {
@@ -52,5 +61,18 @@ public void shouldCallFetchRolls() {
 
     List<Roll> rolls = service.fetch(2, "asc", "platform");
     assertEquals(2, rolls.size());
+}
+
+@Test
+public void shouldUploadFile() throws IOException {
+    MultipartFile file = mock(MultipartFile.class);
+    InputStream in = mock(InputStream.class);
+
+    when(file.getInputStream()).thenReturn(in);
+
+    service.upload(file);
+
+    verify(repository).saveAll(anyIterable());
+    verify(excelHelper).excelToRolls(in);
 }
 }
